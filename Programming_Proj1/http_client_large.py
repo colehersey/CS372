@@ -7,6 +7,7 @@
 
 # because of this, for handling files of large sizes we must loop recv() until an empty byte string is returned, in which case we can safely assume that this is the end of the transmission. 
 
+# ***I USED THE OFFICIAL PYTHON MANUAL AND WATCHED some youtube videos on the topics if I was still a bit confuesed *** -> ontop of textbook examples and notes that were provided
 import socket
 
 # same setup/formatting as the previous http client example

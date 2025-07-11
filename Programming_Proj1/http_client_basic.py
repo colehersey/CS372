@@ -4,6 +4,10 @@
 # 3. sends an HTTP GET request for a particular file that is contained within the server
 # 4. recieve the HTTP response from the server and print it to the terminal for the user to view
 
+# ***I USED THE OFFICIAL PYTHON MANUAL AND WATCHED some youtube videos on the topics if I was still a bit confuesed *** -> ontop of textbook examples and notes that were provided
+
+
+
 import socket 
 
 #define the host url 
@@ -32,3 +36,4 @@ print(response.decode(errors='replace'))
 
 #close the socket connection
 sock.close()
+ 
