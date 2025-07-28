@@ -14,7 +14,7 @@ class RDTLayer(object):
     # CLASS SCOPE VARIABLES
     DATA_LENGTH = 4 # in characters                     # string data that is sent per packet
     FLOW_CONTROL_WIN_SIZE = 15 # in characters          # Max window size for flow-control
-    TIMEOUT_ITERATIONS = 8                              # timeout threshold calculation explained in depth in report
+    TIMEOUT_ITERATIONS = 6                              # timeout threshold calculation explained in depth in report
 
 
     def __init__(self):
@@ -96,7 +96,7 @@ class RDTLayer(object):
             segment.setData(str(data_start), data_chunk)
             segment.setStartIteration(self.currentIteration)
 
-            # dict copy of segment for each seqnum (reusable when needed instead of retransmitting the whole window)
+            # dict copy of segment for each seqnum (reusable when needed instead of retransmitting the whole window) UPDATE THIS USING COPIES ALLOWED MUTABLE DATA
             self.sndpkt[data_start] = data_chunk
             self.sentSegments[data_start] = (segment, self.currentIteration)
             self.lastSentTime[data_start] = self.currentIteration
@@ -124,18 +124,18 @@ class RDTLayer(object):
             if seqnum in self.sndpkt:
                 data_chunk = self.sndpkt[seqnum]
                 
-                # CRITICAL FIX: Create a NEW segment to avoid reference issues
+                # Create a NEW segment to avoid reference issues
                 new_segment = Segment()
                 new_segment.setData(str(seqnum), data_chunk)
                 new_segment.setStartIteration(current_time)
 
-                # Update ALL tracking dictionaries with current time
+                # Update tracking dicts with current time
                 self.sentSegments[seqnum] = (new_segment, current_time)
                 self.lastSentTime[seqnum] = current_time
                 
                 #print error message for debugging
                 print(f"RETRANSMITTING segment: seq={seqnum} (timeout after {self.TIMEOUT_ITERATIONS} iterations)")
-                self.sendChannel.send(segment)
+                self.sendChannel.send(new_segment)
                 self.countSegmentTimeouts += 1
 
     #identify if the incoming segments are data or ack
@@ -170,7 +170,7 @@ class RDTLayer(object):
             if seqnum in self.receivedSegments:
                 print(f"Duplicate segment received: seq={seqnum}")
                 self.duplicateDataReceived += 1
-                return  # Already have this segment
+                return 
             
             # buffer the segment
             self.receivedSegments[seqnum] = data
